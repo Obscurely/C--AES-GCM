@@ -1,2 +1,14 @@
-# C--AES-GCM
-Simple implementation of AES GCM in C# using the built in Cryptography library. The encryption is base64 encoded as well as the key.
+# CSharp-AES-GCM
+Simple implementation of AES GCM in C# using the built in Cryptography library. The encryption is base64 encoded as well as the key. It uses the max possible bits for the encryption (256bits).
+
+# How to use
+1. Generate a base64 encoded encryption key using the GenKey() function.
+2. Using the Encrypt() functin pass it the text, the base64 encryption key and an optional authentificationTag / "password" for extra security. The output is the encryptyed text concated with the unique tag and nonce (different each run).
+3. In order to decrypt the text pass to the Decrypt() function the encrypted text, the base64 encryption key and the authentificationTag / "password" if you passed one when encrypted the text. The output will be the initial text (the function takes care of the tag and nonce).
+
+# How each function works.
+- **GenKey()** works by filling a byte array of size 32 (32 * 8 = 256bits) using the cryptographic function RandomNumberGenerator which fills the array with strong cryptographic random bytes. Then converts the byte array to a base64 string and returns it.
+- **Encrypt()** works by passing the text, a base64 encoded encryption key and an optional authentificationTag (if passed will also be encoded into base64) which acts like a password (is not concated to the encrypted text and needs to be passed manually to the Decypt() function otherwise it will throw an error. The function converts the base64 key back to a byte array and creates to new byte arrays nonce and tag of size AesGcm.Nonce/TagBytesSizes.MaxSize (which is addition with the 256bits key creates true 256bits encryption). The arrays are filled using the cryptographic function RandomNumberGenerator which fills the array with strong cryptographic random bytes. Then the function encrypts the text using an instance of AesGcm and outputs the encrypted text only to a temp byte array, then concats the unique tag and nonce (different each time) to the byte array containing the encrypted text using the Concat() function. And finally it converts the byte array to a base64 string and returns it.
+- **Decypt()** works by passing the encrypted text, the base64 encoded encryption key that was used for encryption and an optional authentificationTag (the function encodes it in base64 to match the original) which you need to pass if you used one otherwise it will throw an error. The function first converts the passed base64 encoded encrypted text back into a byte array, then using the SubArray() function it  gets the tag and nonce as well as the encrypted text only. Then the function decypts the text using an instance of AesGcm which will return a byte array with the decrypted text which is after converted back to string using the built in function Encoding.UTF8.GetString() and return the decrypted text (original text).
+- **Concat()** basically takes one array and just after it places a new one and creates a big array.
+- **SubArray()** takes an array, a start point and the length of the array you want and gets from of the big array and returns it.
