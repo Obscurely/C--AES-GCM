@@ -4,7 +4,7 @@ using System.Security.Cryptography;
 
 namespace AES_GCM
 {
-    public static class AES
+    static class AES
     {
         private static readonly int _keySize = 32; ///32 = 256bits encryption key (32 * 8).
         private static readonly int _nonceSize = AesGcm.NonceByteSizes.MaxSize;
@@ -84,7 +84,7 @@ namespace AES_GCM
             return Encoding.UTF8.GetString(decryptedText);
         }
 
-        public static byte[] Concat(byte[] a, byte[] b)
+        private static byte[] Concat(byte[] a, byte[] b)
         {
             byte[] output = new byte[a.Length + b.Length];
 
@@ -101,7 +101,7 @@ namespace AES_GCM
             return output;
         }
 
-        public static byte[] SubArray(byte[] data, int start, int length)
+        private static byte[] SubArray(byte[] data, int start, int length)
         {
             byte[] result = new byte[length];
 
